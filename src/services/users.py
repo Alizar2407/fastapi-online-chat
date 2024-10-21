@@ -13,16 +13,19 @@ from src.models.schemas import (
 )
 
 
+# Проверка, занято ли данное имя пользователя
 async def check_username_free(username: str, db: AsyncSession) -> bool:
     result = await db.execute(select(UserORM).where(UserORM.username == username))
     return result.scalars().first() is None
 
 
+# Проверка, занят ли данный email
 async def check_email_free(email: str, db: AsyncSession) -> bool:
     result = await db.execute(select(UserORM).where(UserORM.email == email))
     return result.scalars().first() is None
 
 
+# Получение всех пользователей
 async def get_all_users(db: AsyncSession) -> list[UserResponseDTO]:
     result = await db.execute(select(UserORM))
     user_models = result.scalars().all()
@@ -30,6 +33,7 @@ async def get_all_users(db: AsyncSession) -> list[UserResponseDTO]:
     return [UserResponseDTO.model_validate(user.__dict__) for user in user_models]
 
 
+# Получение пользователя по его id
 async def get_user_by_id(user_id: int, db: AsyncSession) -> UserResponseDTO | None:
     user_model = await db.execute(select(UserORM).where(UserORM.id == user_id))
     user_model = user_model.scalars().first()
@@ -40,6 +44,7 @@ async def get_user_by_id(user_id: int, db: AsyncSession) -> UserResponseDTO | No
     return None
 
 
+# Получение пользователя по его имени
 async def get_user_by_username(
     username: str, db: AsyncSession
 ) -> UserResponseDTO | None:
@@ -52,6 +57,8 @@ async def get_user_by_username(
     return None
 
 
+# Получение пользователей, с которыми переписывался указанный пользователь
+# (кому он отправлял и от кого получал хотя бы одно сообщение)
 async def get_connected_users(user_id: int, db: AsyncSession) -> list[UserResponseDTO]:
     subquery = await db.execute(
         select(MessageORM.sender_id).filter(MessageORM.recipient_id == user_id)
@@ -78,6 +85,7 @@ async def get_connected_users(user_id: int, db: AsyncSession) -> list[UserRespon
     ]
 
 
+# Сохранение нового пользователя в БД
 async def create_user(
     user: UserCreateDTO,
     db: AsyncSession,
@@ -98,6 +106,7 @@ async def create_user(
     return UserResponseDTO.model_validate(new_user_model.__dict__)
 
 
+# Изменение параметров пользователя (имя, почта, пароль, ссылка на телеграм)
 async def update_user(
     user_id: int,
     updated_user: UserUpdateDTO,
@@ -131,6 +140,7 @@ async def update_user(
     return UserResponseDTO.model_validate(user_model.__dict__)
 
 
+# Удаление пользователя из БД по его id
 async def delete_user(user_id: int, db: AsyncSession) -> UserResponseDTO | None:
     user_model = await db.execute(select(UserORM).where(UserORM.id == user_id))
     user_model = user_model.scalars().first()

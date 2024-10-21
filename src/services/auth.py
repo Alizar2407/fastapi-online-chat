@@ -13,6 +13,7 @@ ALGORITHM = "HS256"
 bcrypt_context = CryptContext(schemes=["bcrypt"])
 
 
+# Проверка корректности логина и пароля с помощью БД
 async def authenticate_user(
     username: str, password: str, db: AsyncSession
 ) -> UserResponseDTO | None:
@@ -25,6 +26,7 @@ async def authenticate_user(
     return None
 
 
+# Создание JWT на основе данных пользователя
 def create_access_token(user: UserResponseDTO, expires_delta: timedelta = None) -> str:
     if expires_delta is None:
         expires_delta = timedelta(minutes=30)
@@ -47,6 +49,7 @@ def create_access_token(user: UserResponseDTO, expires_delta: timedelta = None) 
     )
 
 
+# Расшифровка JWT с помощью секретного ключа
 def decode_access_token(token: str) -> dict | None:
     try:
         payload = jwt.decode(token, app_settings.JWT_SECRET_KEY, algorithms=[ALGORITHM])

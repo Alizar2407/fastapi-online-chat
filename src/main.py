@@ -42,10 +42,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Маршрутизаторы для API
 app.include_router(api_auth.router)
 app.include_router(api_users.router)
 app.include_router(api_messages.router)
 
+# Маршрутизаторы для веб-страниц
 app.include_router(views_auth.router)
 app.include_router(views_chats.router)
 app.include_router(views_chats_ws.router)
@@ -57,6 +59,7 @@ app.mount(
 )
 
 
+# Основной страницей веб-приложения является /messages
 @app.get("/", status_code=status.HTTP_302_FOUND, include_in_schema=False)
 async def root():
     return RedirectResponse(

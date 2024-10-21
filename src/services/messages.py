@@ -9,6 +9,7 @@ from src.models.message import MessageORM
 from src.models.schemas import MessageResponseDTO
 
 
+# Получение всех сообщений
 async def get_all_messages(db: AsyncSession) -> list[MessageResponseDTO]:
     result = await db.execute(select(MessageORM))
     message_models = result.scalars().all()
@@ -19,6 +20,7 @@ async def get_all_messages(db: AsyncSession) -> list[MessageResponseDTO]:
     ]
 
 
+# Получение сообщения по его id
 async def get_message_by_id(message_id: int, db: AsyncSession) -> MessageResponseDTO:
     message_model = await db.execute(
         select(MessageORM).where(MessageORM.id == message_id)
@@ -31,6 +33,7 @@ async def get_message_by_id(message_id: int, db: AsyncSession) -> MessageRespons
     return None
 
 
+# Получение всех отправленных пользователем сообщений по его id
 async def get_user_messages(user_id: int, db: AsyncSession) -> list[MessageResponseDTO]:
     user_model = await db.execute(
         select(UserORM)
@@ -48,6 +51,7 @@ async def get_user_messages(user_id: int, db: AsyncSession) -> list[MessageRespo
     ]
 
 
+# Выбор всех сообщений, отправленных пользователю и полученных им
 async def get_user_dialog_messages(
     user_id: int, db: AsyncSession
 ) -> list[MessageResponseDTO]:
@@ -68,6 +72,7 @@ async def get_user_dialog_messages(
     ]
 
 
+# Добавление сообщения в БД
 async def create_message(
     sender_id: int,
     recipient_id: int,
@@ -89,6 +94,7 @@ async def create_message(
     return MessageResponseDTO.model_validate(message_model.__dict__)
 
 
+# Получение истории сообщений между двумя пользователями
 async def get_messages_between_users(
     first_user_id: int,
     second_user_id: int,
@@ -118,6 +124,7 @@ async def get_messages_between_users(
     ]
 
 
+# Удаление сообщения из БД по его id
 async def delete_messages(
     message_id: int, db: AsyncSession
 ) -> MessageResponseDTO | None:
@@ -129,7 +136,6 @@ async def delete_messages(
     if not message_model:
         return None
 
-    # Удаляем сообщение
     await db.delete(message_model)
     await db.commit()
 
