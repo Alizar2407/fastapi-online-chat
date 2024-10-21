@@ -56,7 +56,7 @@
     const jwtToken = getCookie('access_token');
 
     // Connect to web socket
-    var ws = new WebSocket(`ws://localhost:8000/ws/messages/{{ other_user.id }}?token=${jwtToken}`);
+    var ws = new WebSocket(`/ws/messages/{{ other_user.id }}?token=${jwtToken}`);
 
     // Display new messages recieved over websocket
     ws.onmessage = function (event) {

@@ -27,7 +27,7 @@ class ApplicationSettings(BaseSettings):
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
 
-    model_config = SettingsConfigDict(env_file="src/.env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 app_settings = ApplicationSettings()

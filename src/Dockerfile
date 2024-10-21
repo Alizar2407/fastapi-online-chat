@@ -9,6 +9,6 @@ RUN pip install -r /app/requirements.txt
 
 COPY src /app/src
 COPY celery_app /app/celery_app
-COPY src/.env /app/src/.env
+COPY .env /app/.env
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
