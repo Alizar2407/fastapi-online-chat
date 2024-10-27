@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mindfusiontesttask"
+name = "fastapi-online-chat"
 version = "0.1.0"
 description = ""
 authors = ["sergey240702 <sergey240702@mail.ru>"]
